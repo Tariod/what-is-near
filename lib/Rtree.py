@@ -2,9 +2,26 @@ import math
 
 
 class Point:
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
+    def __init__(self, lon, lat):
+        self.x, self.y = self.mercator(lon, lat)
+
+    def mercator(self, lon, lat):
+        maxLat = 89.5
+        rMajor = 6378137.0
+        rMinor = 6356752.3142
+        if lat > maxLat:
+            lat = maxLat
+        if lat < -maxLat:
+            lat = -maxLat
+
+        radLat = math.radians(lat)
+        radLong = math.radians(lon)
+
+        f = (rMajor - rMinor) / rMajor
+        e = math.sqrt(2 * f - f ** 2)
+        x = rMajor * radLong
+        y = rMajor*math.log(math.tan(math.pi/4+radLat/2)*((1-e*math.sin(radLat))/(1+e*math.sin(radLat)))**(e/2))
+        return x, y
 
 
 class Circle:
