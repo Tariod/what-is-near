@@ -27,6 +27,8 @@ class Rtree:
 
     def findType(self, position, radius, typeR):
         correctServices = []
+        minRadius = radius
+        nearest = 0
         
         position.mercator()
         region = Circle(position, radius)
@@ -40,6 +42,9 @@ class Rtree:
             distance = region.isInside(service)
             if service.type == typeR and distance < radius:
               correctServices.append(service)
+              if distance < minRadius:
+                nearest = service
+                minRadius = distance
         else:
           for r in range(250, radius, 250):
             servicesInRect = self._find(self.root, regionRect)
@@ -47,9 +52,12 @@ class Rtree:
               distance = region.isInside(service)
               if service.type == typeR and distance < r:
                 correctServices.append(service)
+                if distance < minRadius:
+                  nearest = service
+                  minRadius = distance
             if len(correctServices) > 0:
               break
-        return correctServices
+        return nearest, minRadius
 
     def _find(self, root, region):
         res = []
