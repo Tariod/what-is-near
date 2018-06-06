@@ -12,15 +12,15 @@ parser = argparse.ArgumentParser()
 parser.add_argument("db", help="database file to get map info from", type=str)
 parser.add_argument("lat", help="latitude of a place", type=float)
 parser.add_argument("long", help="longitude of a place", type=float)
-parser.add_argument("size", help="size of a sector to search in", type=float)
+parser.add_argument("size", help="fsdfsf", type=int)
+#parser.add_argument("typeR", help="size of a sector to search in", type=str)
 args = parser.parse_args()
-
 
 def parse(fileNme):
     with io.open(fileNme, encoding='utf-8') as file:
         data = file.read().split('\n')
         data = [field.split(';') for field in data[:-1]]
-    return data
+    return data 
 
 
 rtree = Rtree(5)

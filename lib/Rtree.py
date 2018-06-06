@@ -20,9 +20,36 @@ class Rtree:
         )
         servicesInRect = self._find(self.root, regionRect)
         for service in servicesInRect:
-            if region.isInside(service) is False:
-                servicesInRect.remove(service)
+          distance = region.isInside(service)
+          if distance > radius:
+            servicesInRect.remove(service)
         return servicesInRect
+
+    def findType(self, position, radius, typeR):
+        correctServices = []
+        
+        position.mercator()
+        region = Circle(position, radius)
+        regionRect = Rectangle(
+            Point(position.x - radius, position.y + radius),
+            Point(position.x + radius, position.y - radius)
+        )
+        if radius < 250:
+          servicesInRect = self._find(self.root, regionRect)
+          for service in servicesInRect:
+            distance = region.isInside(service)
+            if service.type == typeR and distance < radius:
+              correctServices.append(service)
+        else:
+          for r in range(250, radius, 250):
+            servicesInRect = self._find(self.root, regionRect)
+            for service in servicesInRect:
+              distance = region.isInside(service)
+              if service.type == typeR and distance < r:
+                correctServices.append(service)
+            if len(correctServices) > 0:
+              break
+        return correctServices
 
     def _find(self, root, region):
         res = []
